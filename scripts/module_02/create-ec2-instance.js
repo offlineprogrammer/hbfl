@@ -2,10 +2,10 @@
 const AWS = require('aws-sdk')
 const helpers = require('./helpers')
 
-// TODO: Configure region
+AWS.config.update({ region: 'us-east-1'})
 
 // Declare local variables
-// TODO: Create an ec2 object
+const ec2 = new AWS.ec2()
 const sgName = 'hamster_sg'
 const keyName = 'hamster_key'
 
