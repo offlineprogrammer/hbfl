@@ -28,7 +28,50 @@ createSecurityGroup(sgName)
 // Create functions
 
 function createSecurityGroup (sgName) {
-  // TODO: Implement sg creation & setting SSH rule
+  const params = {
+    Description: sgName,
+    GroupName: sgName
+  }
+
+  return new Promise ((resolve, reject) => {
+    ec2.createSecurityGroup(params,(err,data) => {
+      if(err) reject(err)
+      else {
+        const params = {
+          GroupdId: data.GroupdId,
+          IpPermissios: [
+            {
+              IpProtocol: 'tcp',
+              FromPort: 22,
+              ToPort: 22,
+              IpRanges: [
+                {
+                  CidrIp: '0.0.0.0/0'
+                }
+              ]
+            },
+            {
+              IpProtocol: 'tcp',
+              FromPort: 3000,
+              ToPort: 3000,
+              IpRanges: [
+                {
+                  CidrIp: '0.0.0.0/0'
+                }
+              ]
+            }
+          ]
+        }
+        ec2.authorizeSecurityGroupIngress(params, (err) => {
+          if (err) reject(err)
+          else resolve()
+        })
+
+      }
+
+    })
+
+  })
 }
 
 function createKeyPair (keyName) {
