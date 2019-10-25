@@ -5,9 +5,9 @@ const helpers = require('./helpers')
 AWS.config.update({ region: 'us-east-1'})
 
 // Declare local variables
-const ec2 = new AWS.ec2()
-const sgName = 'hamster_sg'
-const keyName = 'hamster_key'
+const ec2 = new AWS.EC2()
+const sgName = 'hamster_sg3'
+const keyName = 'hamster_key3'
 
 // Do all the things together
 createSecurityGroup(sgName)
@@ -38,8 +38,8 @@ function createSecurityGroup (sgName) {
       if(err) reject(err)
       else {
         const params = {
-          GroupdId: data.GroupdId,
-          IpPermissios: [
+          GroupId: data.GroupId,
+          IpPermissions: [
             {
               IpProtocol: 'tcp',
               FromPort: 22,
@@ -75,9 +75,34 @@ function createSecurityGroup (sgName) {
 }
 
 function createKeyPair (keyName) {
-  // TODO: Create keypair
+  const params = {
+    KeyName: keyName
+  }
+  return new Promise((resolve, reject) => {
+    ec2.createKeyPair(params, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
 }
 
 function createInstance (sgName, keyName) {
-  // TODO: create ec2 instance
+  const params = {
+    ImageId: 'ami-00eb20669e0990cb4',
+    InstanceType: 't2.micro',
+    KeyName: keyName,
+    MaxCount: 1,
+    MinCount: 1,
+    SecurityGroups: [
+      sgName
+    ],
+    UserData: 'IyEvYmluL2Jhc2gKY3VybCAtLXNpbGVudCAtLWxvY2F0aW9uIGh0dHBzOi8vcnBtLm5vZGVzb3VyY2UuY29tL3NldHVwXzgueCB8IHN1ZG8gYmFzaCAtCnN1ZG8geXVtIGluc3RhbGwgLXkgbm9kZWpzCnN1ZG8geXVtIGluc3RhbGwgLXkgZ2l0CmdpdCBjbG9uZSBodHRwczovL2dpdGh1Yi5jb20vcnlhbm11cmFrYW1pL2hiZmwuZ2l0CmNkIGhiZmwKbnBtIGkKbnBtIHJ1biBzdGFydAoK'
+  }
+  return new Promise((resolve, reject) => {
+    ec2.runInstances(params, (err, data) => {
+      if (err) reject(err)
+      else resolve(data)
+    })
+  })
+
 }
