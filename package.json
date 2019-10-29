@@ -7,7 +7,8 @@
     "dev": "./node_modules/.bin/webpack-dev-server",
     "build": "./node_modules/.bin/webpack",
     "prestart": "npm run build",
-    "start": "node index.js"
+    "start": "./node_modules/.bin/forever stopall && ./node_modules/.bin/forever start index.js",
+    "deploy": "node deploy.js"
   },
   "author": "Ryan Lewis <ryan@ryanhlewis.com>",
   "license": "MIT",
@@ -55,6 +56,7 @@
     "style-loader": "0.18.2",
     "uglifyjs-webpack-plugin": "0.4.6",
     "webpack": "3.3.0",
+    "webpack-cli": "^3.3.9",
     "webpack-dev-server": "2.6.0"
   }
 }
